@@ -1,19 +1,22 @@
 import React from 'react'
 import clsx from 'clsx'
-import { makeStyles } from '@material-ui/core/styles'
+import { connect } from 'react-redux'
 import {
-  AppBar, Badge, Box, Container, CssBaseline, Divider, Drawer, Grid, IconButton, List, Paper, Toolbar, Typography, 
+  AppBar, Badge, Divider, Drawer, IconButton, Toolbar, Typography, 
 } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import { makeStyles } from '@material-ui/core/styles'
+
+interface AppFrameProps {
+  isDrawerOpen: boolean;
+  dispatch: any;
+}
 
 const drawerWidth = 240
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
@@ -68,49 +71,27 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(9),
     },
   },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 240,
-  },
 }))
 
-export default function Dashboard() {
+const AppFrame = ({ isDrawerOpen, dispatch }: AppFrameProps) => {
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
   const handleDrawerOpen = () => {
-    setOpen(true)
+    dispatch({ type: 'APP-FRAME-OPEN-DRAWER' })
   }
   const handleDrawerClose = () => {
-    setOpen(false)
+    dispatch({ type: 'APP-FRAME-CLOSE-DRAWER' })
   }
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+    <>
+      <AppBar position="absolute" className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            className={clsx(classes.menuButton, isDrawerOpen && classes.menuButtonHidden)}
           >
             <MenuIcon />
           </IconButton>
@@ -127,9 +108,9 @@ export default function Dashboard() {
       <Drawer
         variant="permanent"
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.drawerPaper, !isDrawerOpen && classes.drawerPaperClose),
         }}
-        open={open}
+        open={isDrawerOpen}
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
@@ -145,31 +126,14 @@ export default function Dashboard() {
         <List>{secondaryListItems}</List>
         */}
       </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth={false} className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                aaaaaaa
-              </Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                bbbbbbbbbb
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                ccccccccc
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </main>
-    </div>
+    </>
   )
 }
+
+const mapStateToProps = (state: any) => {
+  return {
+    isDrawerOpen: state.appFrame.isDrawerOpen,
+  }
+}
+
+export default connect(mapStateToProps)(AppFrame)

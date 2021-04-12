@@ -1,7 +1,7 @@
 import { createBrowserHistory } from 'history'
 import { applyMiddleware, compose, createStore } from 'redux'
 import { routerMiddleware } from 'connected-react-router'
-import { devToolsEnhancer } from 'redux-devtools-extension'
+// import { devToolsEnhancer } from 'redux-devtools-extension'
 import rootReducer from './reducers'
 
 // import scanReducer from './pages/scan/scan-reducer'
